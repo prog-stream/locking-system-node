@@ -4,6 +4,6 @@ import {test, addLocker, openLock} from "./../controllers/LockerController";
 const router: Router = express.Router();
 router.get("/", test);
 router.post("/locker", addLocker);
-router.post("/locker", openLock);
+router.post("/locker/open", openLock);
 
 export default router;
