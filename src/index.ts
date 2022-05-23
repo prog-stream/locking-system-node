@@ -16,7 +16,7 @@ app.use(express.urlencoded({ extended: true }));
 
 try {
   (async () => {
-    await sequelize.sync({force: true}); // alter will update the table if changes made in the model
+    await sequelize.sync({alter: true}); // alter will update the table if changes made in the model
     console.log("Connection has been established successfully.");
   })();
 } catch (error) {
