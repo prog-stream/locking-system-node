@@ -1,7 +1,6 @@
-import {Request, response, Response} from "express";
-import {MqttClient} from "mqtt";
+import {Request, Response} from "express";
 import {Locker} from "../models/locker.model";
-import LockerService from "../services/LockerService";
+import MqttHandler from "../services/MqttHandler";
 
 export const test = async (req: Request, res: Response) => {
   try {
@@ -13,29 +12,21 @@ export const test = async (req: Request, res: Response) => {
 
 export const openLock = async (req: Request, res: Response) => {
   try {
-    const client = (await LockerService.connection()) as MqttClient;
-    client.on("connect", () => {
-      console.log("client connected");
-      client.publish("devlock", "open");
-      client.subscribe("devlock", (err: Error) => {});
-    });
+    const mqttClient = new MqttHandler();
+    await mqttClient.connect();
 
-    client.on("message", (topic: string, message: Buffer) => {
-      // message is Buffer
-      console.log(topic, message.toString());
-      if (topic === "devlock") {
+    mqttClient.openLock(req.body.topic);
+    setTimeout(() => {
+      if (mqttClient.sendLockStatus() === "opened") {
         return res
-          .status(201)
-          .json({code: 200, message: "Lock open successfully", success: true});
+          .status(200)
+          .json({code: 200, message: "Lock successfully", success: true});
+      } else {
+        return res
+          .status(400)
+          .json({code: 200, message: "Something went wrong", success: false});
       }
-      client.end();
-    });
-    client.on("error", (err: Error) => {
-      res
-        .status(400)
-        .json({code: 400, message: "something went wrong", success: false});
-      client.end();
-    });
+    }, 1000);
   } catch (error) {
     console.log(error);
   }

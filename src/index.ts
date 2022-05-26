@@ -10,7 +10,7 @@ const app: Express = express();
 app.use(cors());
 
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.urlencoded({extended: true}));
 
 // Testing Database connection
 
@@ -24,7 +24,7 @@ try {
 }
 
 // use Routes
-app.use('/api/v1/', routes);
+app.use("/api/v1/", routes);
 
 app.listen(config.PORT, () => {
   console.log(
