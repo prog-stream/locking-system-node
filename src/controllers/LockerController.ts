@@ -1,3 +1,4 @@
+import {MQTT_MESSAGES_TYPES} from "./../config/constants";
 import {Request, Response} from "express";
 import {Locker} from "../models/locker.model";
 import MqttHandler from "../services/MqttHandler";
@@ -17,14 +18,14 @@ export const openLock = async (req: Request, res: Response) => {
 
     mqttClient.openLock(req.body.topic);
     setTimeout(() => {
-      if (mqttClient.sendLockStatus() === "opened") {
+      if (mqttClient.sendLockStatus() === MQTT_MESSAGES_TYPES.OPENED) {
         return res
           .status(200)
           .json({code: 200, message: "Lock successfully", success: true});
       } else {
         return res
-          .status(400)
-          .json({code: 200, message: "Something went wrong", success: false});
+          .status(200)
+          .json({code: 422, message: "Something went wrong", success: false});
       }
     }, 1000);
   } catch (error) {

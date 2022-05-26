@@ -1,3 +1,4 @@
+import {MQTT_TOPICS, MQTT_MESSAGES_TYPES} from "./../config/constants";
 import {connect, MqttClient} from "mqtt";
 import config from "../config/config";
 
@@ -11,7 +12,7 @@ class MqttHandler {
     this.mqttClient = null;
     this.username = "YOUR_USER"; // mqtt credentials if these are needed to connect
     this.password = "YOUR_PASSWORD";
-    this.subscribeTopics = ["lock/#"];
+    this.subscribeTopics = [MQTT_TOPICS.LOCKS];
     this.doorOpen = null;
   }
   connect() {
@@ -33,7 +34,7 @@ class MqttHandler {
 
     // Connection callback
     this.mqttClient.on("connect", () => {
-      console.log(`mqtt client connected`);
+      console.log("mqtt client connected");
       this.mqttClient?.publish("hello world", "");
     });
 
@@ -47,8 +48,8 @@ class MqttHandler {
     this.mqttClient.on("message", (topic, message) => {
       console.log(message.toString());
       let [_, lockId, msesageType] = topic.split("/");
-      if (msesageType === "opened") {
-        this.doorOpen = "opened";
+      if (msesageType === MQTT_MESSAGES_TYPES.OPENED) {
+        this.doorOpen = MQTT_MESSAGES_TYPES.OPENED;
       }
     });
 
