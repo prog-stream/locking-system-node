@@ -6,13 +6,13 @@ class MqttHandler {
   username: string;
   password: string;
   subscribeTopics: string[];
-  doorOpen: string | null;
+  status: string | null;
   constructor() {
     this.mqttClient = null;
     this.username = "YOUR_USER"; // mqtt credentials if these are needed to connect
     this.password = "YOUR_PASSWORD";
     this.subscribeTopics = ["lock/#"];
-    this.doorOpen = null;
+    this.status = null;
   }
   connect() {
     // Connect mqtt with credentials (in case of needed, otherwise we can omit 2nd param)
@@ -48,7 +48,7 @@ class MqttHandler {
       console.log(message.toString());
       let [_, lockId, msesageType] = topic.split("/");
       if (msesageType === "opened") {
-        this.doorOpen = "opened";
+        this.status = "opened";
       }
     });
 
@@ -63,7 +63,7 @@ class MqttHandler {
   }
 
   sendLockStatus() {
-    return this.doorOpen;
+    return this.status;
   }
 }
 
