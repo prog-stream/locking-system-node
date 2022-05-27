@@ -1,3 +1,4 @@
+import {responseHanlder} from "./../helpers/responseHandler";
 import {Request, Response} from "express";
 import {Locker} from "../models/locker.model";
 import MqttHandler from "../services/MqttHandler";
@@ -20,12 +21,9 @@ export const openLock = async (req: Request, res: Response) => {
       if (mqttClient.sendLockStatus() === "opened") {
         return res
           .status(200)
-          .json({code: 200, message: "Lock successfully", success: true});
-      } else {
-        return res
-          .status(400)
-          .json({code: 200, message: "Something went wrong", success: false});
+          .json(responseHanlder(200, "Lock open successfully"));
       }
+      return res.status(400).json(responseHanlder(400, "Something went wrong"));
     }, 1000);
   } catch (error) {
     console.log(error);
